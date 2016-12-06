@@ -3,6 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from unittest import skip
 
+from .server_tools import reset_database
+
 import unittest
 import time
 import sys
@@ -13,6 +15,7 @@ class FunctionalTest(StaticLiveServerTestCase):
 	def setUpClass(cls):
 		for arg in sys.argv:
 			if 'liveserver' in arg:
+				cls.server_host = arg.split('=')[1]
 				cls.server_url = 'http://' + arg.split('=')[1]
 				cls.against_staging = True
 				return
@@ -22,10 +25,12 @@ class FunctionalTest(StaticLiveServerTestCase):
 
 	@classmethod
 	def tearDownClass(cls):
-		if cls.server_url == cls.live_server_url:
+		if not cls.against_staging:
 			super().tearDownClass()
 
 	def setUp(self):
+		if self.against_staging:
+			reset_database(self.server_host)
 		self.browser = webdriver.Firefox()
 		self.browser.implicitly_wait(3)
 
