@@ -6,6 +6,7 @@ class ItemValidationTest(FunctionalTest):
 	def get_error_element(self):
 		return self.browser.find_element_by_css_selector('.has-error')
 
+	@skip
 	def test_cannot_add_empty_list_items(self):
 		# Edith goes to the home page and accidentally tries to submit
 	    # an empty list item. She hits Enter on the empty input box
@@ -48,7 +49,7 @@ class ItemValidationTest(FunctionalTest):
 		error = self.get_error_element()
 		self.assertEqual(error.text, "You've already got this in your list")
 
-
+	@skip
 	def test_error_messages_are_cleared_on_input(self):
 		#Edith starts a new list in a way that causes a validation error:
 		self.browser.get(self.server_url)
